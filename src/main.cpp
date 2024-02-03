@@ -6,11 +6,44 @@
 
 // GLFW
 #include <GLFW/glfw3.h>
+#include  <fstream>
+#include  <string>
+#include  <sstream>
 
+
+struct ShaderProgramSource {
+    std::string VertexSource;
+    std::string FragmentSource;
+};
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
 
+
+static ShaderProgramSource ParseShader(const std::string& location) {
+    std::ifstream stream(location);
+    enum class ShaderType {
+        NONE = -1,
+        VERTEX = 0,
+        FRAGMENT = 1
+    };
+
+    std::string line;
+    std::stringstream ss[2];
+    ShaderType type = ShaderType::NONE;
+    while (getline(stream, line)) {
+        if (line.find("shader") != std::string::npos) {
+            if (line.find("vertex") != std::string::npos) {
+                type = ShaderType::VERTEX;
+            } else if (line.find("fragment") != std::string::npos) {
+                type = ShaderType::FRAGMENT;
+            }
+        } else {
+            ss[(int) type] << line << '\n';
+        }
+    }
+    return {ss[0].str(), ss[1].str()};
+}
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action,
                   int mode) {
@@ -64,7 +97,6 @@ static unsigned int createShader(const std::string& vetexShader, const std::stri
     }
 
 
-
     return program;
 }
 
@@ -94,8 +126,12 @@ int main() {
     GLfloat vertices[] = {
         -0.5, -0.5,
         0.5, -0.5,
-        0, 0.5
+        0, 0.5,
+        -0.5, -1.5,
+        0.5, -1.5,
+        0, -0.5
     };
+
     //id
     GLuint VBO;
     //Generate 1 buffer with this id
@@ -107,34 +143,17 @@ int main() {
 
     //specifying layout
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid*)0);
-
-
-    std::string vertexShader ="#version 330 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "void main()\n"
-    "{\n"
-    "gl_Position = vec4(position.x, position.y, position.z, 1.0);\n"
-    "}\0";
-    std::string fragmentShader =
-            "#version 330 core\n"
-            "out vec4 color;\n"
-            "void main()\n"
-            "{\n"
-            "color = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
-            "}\n\0";
-
-
-    unsigned int program = createShader(vertexShader, fragmentShader);
+    glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0);
+    ShaderProgramSource source = ParseShader("res\\shaders\\Basic.shader");
+    unsigned int program = createShader(source.VertexSource, source.FragmentSource);
     glUseProgram(program);
     while (!glfwWindowShouldClose(window)) {
         // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
         // Render
-        // Clear the colorbuffer
 
         // Draw our first triangle
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
@@ -144,5 +163,3 @@ int main() {
     glfwTerminate();
     return 0;
 }
-
-
