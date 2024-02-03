@@ -39,6 +39,7 @@ static ShaderProgramSource ParseShader(const std::string& location) {
                 type = ShaderType::FRAGMENT;
             }
         } else {
+            std::string asd;
             ss[(int) type] << line << '\n';
         }
     }
@@ -126,11 +127,14 @@ int main() {
     GLfloat vertices[] = {
         -0.5, -0.5,
         0.5, -0.5,
-        0, 0.5,
-        -0.5, -1.5,
-        0.5, -1.5,
-        0, -0.5
+        0.5, 0.5,
+        -0.5, 0.5,
     };
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
 
     //id
     GLuint VBO;
@@ -144,6 +148,15 @@ int main() {
     //specifying layout
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0);
+    GLuint IBO;
+    //Generate 1 buffer with this id
+    glGenBuffers(1, &IBO);
+    //Say that the buffer with id VBO is Array_Buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    //Coping Data into this buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
     ShaderProgramSource source = ParseShader("res\\shaders\\Basic.shader");
     unsigned int program = createShader(source.VertexSource, source.FragmentSource);
     glUseProgram(program);
@@ -153,7 +166,7 @@ int main() {
         // Render
 
         // Draw our first triangle
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
 
         // Swap the screen buffers
         glfwSwapBuffers(window);
