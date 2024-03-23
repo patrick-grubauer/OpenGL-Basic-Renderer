@@ -2,7 +2,14 @@ cmake_minimum_required(VERSION 3.27)
 project(OpenGLIntro)
 
 set(CMAKE_CXX_STANDARD 20)
-add_executable(openglintro main.cpp)
+add_executable(openglintro main.cpp
+        Renderer.cpp
+        Renderer.h
+        VertexBuffer.cpp
+        VertexBuffer.h
+        IndexBuffer.cpp
+        IndexBuffer.h
+)
 include_directories("C:/cpplibs/GLEW/include")
 target_link_libraries(openglintro "C:/cpplibs/GLEW/glew32sd.lib")
 

@@ -9,23 +9,9 @@
 #include  <fstream>
 #include  <string>
 #include  <sstream>
-#define ASSERT(x) if(!(x)) __debugbreak()
-#define GlCall(x) GLClearError();\
-    x;\
-    ASSERT(GlLogCall(#x, __FILE__, __LINE__))
-
-static void GLClearError() {
-    while (glGetError());
-}
-
-static bool GlLogCall(const char* function, const char* file, int line) {
-    while (GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] (" << error << ") Function:"<<function<<" File:"<<file<<":"<<line << std::endl;
-        return false;
-    }
-    return true;
-}
-
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -121,12 +107,17 @@ int main() {
     // Init GLFW
     glfwInit();
     // Create a GLFWwindow object that we can use for GLFW's functions
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+
+
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     // Set the required callback functions
     glfwSetKeyCallback(window, key_callback);
-
+    glfwSwapInterval(6);
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
     // Initialize GLEW to setup the OpenGL Function pointers
@@ -151,42 +142,44 @@ int main() {
     };
 
 
+    GLuint VAO;
+    GlCall(glGenVertexArrays(1,&VAO));
+    GlCall(glBindVertexArray(VAO));
     //id
-    GLuint VBO;
-    //Generate 1 buffer with this id
-    glGenBuffers(1, &VBO);
-    //Say that the buffer with id VBO is Array_Buffer
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //Coping Data into this buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    VertexBuffer vb(vertices, 4 * 2 * sizeof(GLuint));
+    GlCall(glEnableVertexAttribArray(0));
+    GlCall(glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0));
 
-    //specifying layout
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0);
-    GLuint IBO;
-    //Generate 1 buffer with this id
-    glGenBuffers(1, &IBO);
-    //Say that the buffer with id VBO is Array_Buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    //Coping Data into this buffer
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
+    IndexBuffer ib(indices, 6);
 
     ShaderProgramSource source = ParseShader("res\\shaders\\Basic.shader");
     unsigned int program = createShader(source.VertexSource, source.FragmentSource);
-    glUseProgram(program);
-    while (!glfwWindowShouldClose(window)) {
-        // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-        glfwPollEvents();
-        // Render
 
-        // Draw our first triangle
-        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr););
-        // Swap the screen buffers
+
+    int location = glGetUniformLocation(program, "u_Color");
+    ASSERT(location>-1);
+    GlCall(glBindVertexArray(0));
+    GlCall(glUseProgram(0));
+    float r = 0.0f;
+    float increment = 0.05f;
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        GlCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        GlCall(glUseProgram(program));
+        GlCall(glUniform4f(location, 0.8f, r, 1, 1.0f));
+
+        GlCall(glBindVertexArray(VAO));
+        // ib.bind();
+        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr););
+        if (r > 1.0f)
+            increment = -0.05f;
+        else if (r < 0.0f)
+            increment = 0.05f;
+        r += increment;
         glfwSwapBuffers(window);
     }
 
-    // Terminate GLFW, clearing any resources allocated by GLFW.
     glfwTerminate();
     return 0;
 }
