@@ -9,6 +9,22 @@
 #include  <fstream>
 #include  <string>
 #include  <sstream>
+#define ASSERT(x) if(!(x)) __debugbreak()
+#define GlCall(x) GLClearError();\
+    x;\
+    ASSERT(GlLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError() {
+    while (glGetError());
+}
+
+static bool GlLogCall(const char* function, const char* file, int line) {
+    while (GLenum error = glGetError()) {
+        std::cout << "[OpenGL Error] (" << error << ") Function:"<<function<<" File:"<<file<<":"<<line << std::endl;
+        return false;
+    }
+    return true;
+}
 
 
 struct ShaderProgramSource {
@@ -27,7 +43,6 @@ static ShaderProgramSource ParseShader(const std::string& location) {
         VERTEX = 0,
         FRAGMENT = 1
     };
-
     std::string line;
     std::stringstream ss[2];
     ShaderType type = ShaderType::NONE;
@@ -166,8 +181,7 @@ int main() {
         // Render
 
         // Draw our first triangle
-        glDrawElements(GL_TRIANGLES, 7, GL_UNSIGNED_INT, nullptr);
-
+        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr););
         // Swap the screen buffers
         glfwSwapBuffers(window);
     }
