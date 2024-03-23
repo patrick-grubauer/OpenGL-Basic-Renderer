@@ -9,6 +9,10 @@ add_executable(openglintro main.cpp
         VertexBuffer.h
         IndexBuffer.cpp
         IndexBuffer.h
+        VertexArray.cpp
+        VertexArray.h
+        VertexBufferLayout.cpp
+        VertexBufferLayout.h
 )
 include_directories("C:/cpplibs/GLEW/include")
 target_link_libraries(openglintro "C:/cpplibs/GLEW/glew32sd.lib")

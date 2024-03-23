@@ -19,7 +19,7 @@ public:
 
     void unbind() const;
 
-    inline unsigned int getCount() const { return m_Count; }
+    unsigned int getCount() const { return m_Count; }
 };
 
 #endif //IndexBuffer_H
