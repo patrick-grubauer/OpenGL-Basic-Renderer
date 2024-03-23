@@ -139,47 +139,45 @@ int main() {
     unsigned int indices[] = {
         0, 1, 2,
         2, 3, 0
-    };
-
-
-    GLuint VAO;
-    GlCall(glGenVertexArrays(1,&VAO));
-    GlCall(glBindVertexArray(VAO));
-    //id
-    VertexBuffer vb(vertices, 4 * 2 * sizeof(GLuint));
-    GlCall(glEnableVertexAttribArray(0));
-    GlCall(glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0));
-
-    IndexBuffer ib(indices, 6);
-
-    ShaderProgramSource source = ParseShader("res\\shaders\\Basic.shader");
-    unsigned int program = createShader(source.VertexSource, source.FragmentSource);
-
-
-    int location = glGetUniformLocation(program, "u_Color");
-    ASSERT(location>-1);
-    GlCall(glBindVertexArray(0));
-    GlCall(glUseProgram(0));
-    float r = 0.0f;
-    float increment = 0.05f;
-    while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
-        GlCall(glClear(GL_COLOR_BUFFER_BIT));
-
-        GlCall(glUseProgram(program));
-        GlCall(glUniform4f(location, 0.8f, r, 1, 1.0f));
-
+    }; {
+        GLuint VAO;
+        GlCall(glGenVertexArrays(1,&VAO));
         GlCall(glBindVertexArray(VAO));
-        // ib.bind();
-        GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr););
-        if (r > 1.0f)
-            increment = -0.05f;
-        else if (r < 0.0f)
-            increment = 0.05f;
-        r += increment;
-        glfwSwapBuffers(window);
-    }
+        //id
+        VertexBuffer vb(vertices, 4 * 2 * sizeof(GLuint));
+        GlCall(glEnableVertexAttribArray(0));
+        GlCall(glVertexAttribPointer(0, 2,GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 2, (GLvoid *) 0));
 
+        IndexBuffer ib(indices, 6);
+
+        ShaderProgramSource source = ParseShader("res\\shaders\\Basic.shader");
+        unsigned int program = createShader(source.VertexSource, source.FragmentSource);
+
+
+        int location = glGetUniformLocation(program, "u_Color");
+        ASSERT(location>-1);
+        GlCall(glBindVertexArray(0));
+        GlCall(glUseProgram(0));
+        float r = 0.0f;
+        float increment = 0.05f;
+        while (!glfwWindowShouldClose(window)) {
+            glfwPollEvents();
+            GlCall(glClear(GL_COLOR_BUFFER_BIT));
+
+            GlCall(glUseProgram(program));
+            GlCall(glUniform4f(location, 0.8f, r, 1, 1.0f));
+
+            GlCall(glBindVertexArray(VAO));
+            // ib.bind();
+            GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr););
+            if (r > 1.0f)
+                increment = -0.05f;
+            else if (r < 0.0f)
+                increment = 0.05f;
+            r += increment;
+            glfwSwapBuffers(window);
+        }
+    }
     glfwTerminate();
     return 0;
 }
