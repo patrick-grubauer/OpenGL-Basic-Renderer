@@ -1,6 +1,6 @@
 # OpenGL Intro
 
-This repository contains introductory code and examples for getting started with OpenGL.
+This repository contains introductory code and examples for getting started with OpenGL. The main purpose of this repository is to get a good understanding of opengl to start my next project, which is a chess engine :D
 
 ## Overview
 
