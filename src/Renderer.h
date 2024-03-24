@@ -7,9 +7,9 @@
 #define GlCall(x) GLClearError();\
     x;\
     ASSERT(GlLogCall(#x, __FILE__, __LINE__))
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "res/Shader.h"
+#include "BufferObjects/IndexBuffer.h"
+#include "BufferObjects/VertexArray.h"
+#include "Shader.h"
 
 void GLClearError();
 bool GlLogCall(const char* function, const char* file, int line);

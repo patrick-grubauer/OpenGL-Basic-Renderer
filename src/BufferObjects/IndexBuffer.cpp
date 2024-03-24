@@ -3,7 +3,7 @@
 
 #include "IndexBuffer.h"
 #include <GL/glew.h>
-#include "Renderer.h"
+#include "../Renderer.h"
 
 IndexBuffer::IndexBuffer(const void* data, unsigned int count): m_Count(count) {
     GlCall(glGenBuffers(1, &m_RendererId));

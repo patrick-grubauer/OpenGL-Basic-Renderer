@@ -7,11 +7,12 @@
 #include <GLFW/glfw3.h>
 #include  <string>
 #include "Renderer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "VertexBufferLayout.h"
-#include "res/Shader.h"
+#include "BufferObjects/VertexBuffer.h"
+#include "BufferObjects/IndexBuffer.h"
+#include "BufferObjects/Texture.h"
+#include "BufferObjects/VertexArray.h"
+#include "BufferObjects/VertexBufferLayout.h"
+#include "Shader.h"
 
 
 // Window dimensions
@@ -55,25 +56,30 @@ int main() {
     glfwSetKeyCallback(window, key_callback);
     // Game loop
     GLfloat vertices[] = {
-        -0.5, -0.5,
-        0.5, -0.5,
-        0.5, 0.5,
-        -0.5, 0.5,
+        -0.5, -0.5, 0.0f, 0.0f,
+        0.5, -0.5, 1.0f, 0.0f,
+        0.5, 0.5, 1.0f, 1.0f,
+        -0.5, 0.5, 0.0f, 1.0f
     };
     unsigned int indices[] = {
         0, 1, 2,
         2, 3, 0
     }; {
         VertexArray va;
-        VertexBuffer vb(vertices, 4 * 2 * sizeof(GLuint));
+        VertexBuffer vb(vertices, 4 * 4 * sizeof(float));
 
         VertexBufferLayout layout;
         layout.push<float>(2);
+        layout.push<float>(2);
+
         va.addBuffer(vb, layout);
 
         IndexBuffer ib(indices, 6);
         Shader shader("res\\shaders\\Basic.shader");
         Renderer renderer;
+
+        Texture texture("res\\textures\\queen.jpg");
+        texture.bind();
 
         float r = 0.0f;
         float increment = 0.05f;
@@ -81,6 +87,8 @@ int main() {
             glfwPollEvents();
             renderer.clear();
             shader.bind();
+            shader.setUniform1i("u_Texture", 0);
+
             shader.setUniform4f("u_Color", 1, r, 1, 1);
 
             renderer.drawTest(va, ib, shader);

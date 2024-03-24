@@ -5,16 +5,20 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(openglintro main.cpp
         Renderer.cpp
         Renderer.h
-        VertexBuffer.cpp
-        VertexBuffer.h
-        IndexBuffer.cpp
-        IndexBuffer.h
-        VertexArray.cpp
-        VertexArray.h
-        VertexBufferLayout.cpp
-        VertexBufferLayout.h
-        res/Shader.cpp
-        res/Shader.h
+        BufferObjects/VertexBuffer.cpp
+        BufferObjects/VertexBuffer.h
+        BufferObjects/IndexBuffer.cpp
+        BufferObjects/IndexBuffer.h
+        BufferObjects/VertexArray.cpp
+        BufferObjects/VertexBufferLayout.cpp
+        BufferObjects/VertexBufferLayout.h
+        Shader.cpp
+        Shader.h
+        BufferObjects/VertexArray.h
+        res/vendor/stb_image.cpp
+        res/vendor/stb_image.h
+        BufferObjects/Texture.cpp
+        BufferObjects/Texture.h
 )
 include_directories("C:/cpplibs/GLEW/include")
 target_link_libraries(openglintro "C:/cpplibs/GLEW/glew32sd.lib")

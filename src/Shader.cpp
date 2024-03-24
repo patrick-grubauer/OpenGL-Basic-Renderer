@@ -10,7 +10,7 @@
 #include <sstream>
 #include <GL/glew.h>
 
-#include "../Renderer.h"
+#include "Renderer.h"
 
 
 ShaderProgramSource Shader::parseShader() {
@@ -91,23 +91,26 @@ Shader::~Shader() {
     GlCall(glDeleteProgram(m_RendererId));
 }
 
-void Shader::bind() const{
+void Shader::bind() const {
     GlCall(glUseProgram(m_RendererId));
 }
 
-void Shader::unbind() const{
+void Shader::unbind() const {
     GlCall(glUseProgram(0));
 }
 
-void Shader::setUniform4f(const std::string& name, float v1, float v2, float v3, float v4) {
-    if (uniform_locations.find(name) != uniform_locations.end()) {
-        GlCall(glUniform4f(uniform_locations[name], v1,v2,v3,v4));
-    } else {
-        GlCall(glUniform4f( getUnifromLocation(name), v1, v2, v3, v4));
-    }
+void Shader::setUniform1i(const std::string& name, int value) {
+    GlCall(glUniform1i( getUnifromLocation(name), value));
 }
 
-unsigned int Shader::getUnifromLocation(const std::string& name) {
+void Shader::setUniform4f(const std::string& name, float v1, float v2, float v3, float v4) {
+    GlCall(glUniform4f( getUnifromLocation(name), v1, v2, v3, v4));
+}
+
+int Shader::getUnifromLocation(const std::string& name) {
+    if (uniform_locations.find(name) != uniform_locations.end()) {
+        return uniform_locations[name];
+    }
     GlCall(int location = glGetUniformLocation(m_RendererId, &name[0]));
     if (location < 0)
         std::cout << "Uniform not found!" << std::endl;
