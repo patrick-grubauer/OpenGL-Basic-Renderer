@@ -7,6 +7,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "res/vendor/glm/fwd.hpp"
+
 struct ShaderProgramSource {
     std::string VertexSource;
     std::string FragmentSource;
@@ -30,6 +32,7 @@ public:
     void setUniform4f(const std::string& name, float v1, float v2, float v3, float v4);
     void setUniform1i(const std::string& name, int value);
 
+    void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 private:
     int getUnifromLocation(const std::string& name);

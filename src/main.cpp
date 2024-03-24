@@ -13,6 +13,8 @@
 #include "BufferObjects/VertexArray.h"
 #include "BufferObjects/VertexBufferLayout.h"
 #include "Shader.h"
+#include "res/vendor/glm/glm.hpp"
+#include "res/vendor/glm/gtc/matrix_transform.hpp"
 
 
 // Window dimensions
@@ -75,21 +77,27 @@ int main() {
         va.addBuffer(vb, layout);
 
         IndexBuffer ib(indices, 6);
+
+        glm::mat4 proj = glm::ortho(-1.0f, 1.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
         Shader shader("res\\shaders\\Basic.shader");
+        shader.bind();
+        shader.setUniformMat4f("u_MVP",proj);
         Renderer renderer;
 
         Texture texture("res\\textures\\queen.jpg");
         texture.bind();
-
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         float r = 0.0f;
         float increment = 0.05f;
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
             renderer.clear();
-            shader.bind();
+            // Alpha-Blending aktivieren
+
             shader.setUniform1i("u_Texture", 0);
 
-            shader.setUniform4f("u_Color", 1, r, 1, 1);
 
             renderer.drawTest(va, ib, shader);
 

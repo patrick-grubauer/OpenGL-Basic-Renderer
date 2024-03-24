@@ -9,6 +9,7 @@
 #include <string>
 #include <sstream>
 #include <GL/glew.h>
+#include "res/vendor/glm/glm.hpp"
 
 #include "Renderer.h"
 
@@ -97,6 +98,10 @@ void Shader::bind() const {
 
 void Shader::unbind() const {
     GlCall(glUseProgram(0));
+}
+
+void Shader::setUniformMat4f(const std::string& name, const glm::mat4& matrix) {
+    glUniformMatrix4fv(getUnifromLocation(name), 1,GL_FALSE, &matrix[0][0]);
 }
 
 void Shader::setUniform1i(const std::string& name, int value) {
