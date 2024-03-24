@@ -4,11 +4,11 @@
 
 #ifndef VERTEXBUFFERLAYOUT_H
 #define VERTEXBUFFERLAYOUT_H
-#include <assert.h>
 #include <vector>
 #include <GL/glew.h>
 
 #include "Renderer.h"
+
 
 struct VertexBufferElement {
     unsigned int count;

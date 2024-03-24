@@ -5,9 +5,9 @@
 #ifndef VERTEXARRAY_H
 #define VERTEXARRAY_H
 #include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
+#include "VertexArray.h"
 
-
+class VertexBufferLayout;
 class VertexArray {
 private:
     unsigned int m_RenderId;

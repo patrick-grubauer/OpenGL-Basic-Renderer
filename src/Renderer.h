@@ -7,9 +7,19 @@
 #define GlCall(x) GLClearError();\
     x;\
     ASSERT(GlLogCall(#x, __FILE__, __LINE__))
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+#include "res/Shader.h"
 
 void GLClearError();
 bool GlLogCall(const char* function, const char* file, int line);
 
+class Renderer {
+public:
+    void drawQuad()const;
+    void drawTriangle()const;
+    void clear() const;
+    void drawTest(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
+};
 
 #endif //RENDERER_H

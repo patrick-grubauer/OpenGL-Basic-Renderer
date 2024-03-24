@@ -6,6 +6,10 @@
 #include <iostream>
 #include <GL/glew.h>
 
+void Renderer::clear() const {
+    GlCall(glClear(GL_COLOR_BUFFER_BIT));
+}
+
 void GLClearError() {
     while (glGetError());
 }
@@ -17,4 +21,13 @@ bool GlLogCall(const char* function, const char* file, int line) {
         return false;
     }
     return true;
+}
+
+void Renderer::drawTriangle() const {
+}
+
+void Renderer::drawTest(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
+    va.bind();
+    ib.bind();
+    GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr););
 }
