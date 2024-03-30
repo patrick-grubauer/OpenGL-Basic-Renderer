@@ -54,6 +54,6 @@ _deps
 
 # End of https://www.toptal.com/developers/gitignore/api/cmake,c++
 
-src/.cache/
-src/build/
-src/compile_commands.json
+.cache/
+build/
+compile_commands.json
