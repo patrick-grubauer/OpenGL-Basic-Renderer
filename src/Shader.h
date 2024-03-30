@@ -7,42 +7,43 @@
 #include <string>
 #include <unordered_map>
 
-#include "res/vendor/glm/fwd.hpp"
+#include <glm/fwd.hpp>
 
 struct ShaderProgramSource {
-    std::string VertexSource;
-    std::string FragmentSource;
+  std::string VertexSource;
+  std::string FragmentSource;
 };
 
 class Shader {
 private:
-    unsigned int m_RendererId;
-    const std::string m_Filepath;
-    std::unordered_map<std::string, int> uniform_locations;
+  unsigned int m_RendererId;
+  const std::string m_Filepath;
+  std::unordered_map<std::string, int> uniform_locations;
 
 public:
-    Shader(const std::string& path);
+  Shader(const std::string &path);
 
-    ~Shader();
+  ~Shader();
 
-    void bind() const;
+  void bind() const;
 
-    void unbind() const;
+  void unbind() const;
 
-    void setUniform4f(const std::string& name, float v1, float v2, float v3, float v4);
-    void setUniform1i(const std::string& name, int value);
+  void setUniform4f(const std::string &name, float v1, float v2, float v3,
+                    float v4);
+  void setUniform1i(const std::string &name, int value);
 
-    void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
+  void setUniformMat4f(const std::string &name, const glm::mat4 &matrix);
 
 private:
-    int getUnifromLocation(const std::string& name);
+  int getUnifromLocation(const std::string &name);
 
-    unsigned int createShader(const std::string& vetexShader, const std::string& fragmentShader);
+  unsigned int createShader(const std::string &vetexShader,
+                            const std::string &fragmentShader);
 
-    unsigned int compileShader(unsigned int type, const std::string& source);
+  unsigned int compileShader(unsigned int type, const std::string &source);
 
-    ShaderProgramSource parseShader();
+  ShaderProgramSource parseShader();
 };
 
-
-#endif //SHADER_H
+#endif // SHADER_H
