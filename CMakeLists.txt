@@ -3,11 +3,28 @@ project(OpenGLIntro)
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 
+FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git)
+FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git)
+FetchContent_Declare(
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG master
+)
+
+
+FetchContent_MakeAvailable(glfw glm imgui)
+file(GLOB IMGUI_SRC
+    ${imgui_SOURCE_DIR}/*.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    src/Renderer.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+    src/BufferObjects/VertexBuffer.cpp
+)
+
+
 add_executable(openglintro 
         src/main.cpp
-        src/Renderer.cpp
         src/Renderer.h
-        src/BufferObjects/VertexBuffer.cpp
         src/BufferObjects/VertexBuffer.h
         src/BufferObjects/IndexBuffer.cpp
         src/BufferObjects/IndexBuffer.h
@@ -21,11 +38,15 @@ add_executable(openglintro
         src/BufferObjects/Texture.h
         "${CMAKE_SOURCE_DIR}/extern/glad/glad.h" "${CMAKE_SOURCE_DIR}/extern/glad/glad.c"
         "${CMAKE_SOURCE_DIR}/extern/stb_image.h" "${CMAKE_SOURCE_DIR}/extern/stb_image.cpp"
+        "${IMGUI_SRC}"
+        )
+target_include_directories(openglintro
+        PUBLIC
+            ${imgui_SOURCE_DIR}
+            ${imgui_SOURCE_DIR}/backends
+            ${imgui_SOURCE_DIR}/examples
 )
 
-FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git)
-FetchContent_Declare(glm GIT_REPOSITORY https://github.com/g-truc/glm.git)
-FetchContent_MakeAvailable(glfw glm)
 target_link_libraries(openglintro glfw glm::glm)
 
 

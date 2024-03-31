@@ -1,13 +1,4 @@
-#include <glad/glad.h>
-#include <iostream>
-
 // GLFW
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <string>
-
 #include "BufferObjects/IndexBuffer.h"
 #include "BufferObjects/Texture.h"
 #include "BufferObjects/VertexArray.h"
@@ -15,9 +6,20 @@
 #include "BufferObjects/VertexBufferLayout.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include <GLFW/glfw3.h>
+#include <cmath>
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <string>
 
 // Window dimensions
-const GLuint WIDTH = 800, HEIGHT = 600;
+const GLuint WIDTH = 1920, HEIGHT = 1080;
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action,
                   int mode) {
@@ -56,8 +58,8 @@ int main() {
 
   glfwSetKeyCallback(window, key_callback);
   // Game loop
-  GLfloat vertices[] = {-0.5, -0.5, 0.0f, 0.0f, 0.5,  -0.5, 1.0f, 0.0f,
-                        0.5,  0.5,  1.0f, 1.0f, -0.5, 0.5,  0.0f, 1.0f};
+  GLfloat vertices[] = {0,   0,   0.0f, 0.0f, 960, 0,   1.0f, 0.0f,
+                        960, 540, 1.0f, 1.0f, 0,   540, 0.0f, 1.0f};
   unsigned int indices[] = {0, 1, 2, 2, 3, 0};
   {
     VertexArray va;
@@ -71,36 +73,73 @@ int main() {
 
     IndexBuffer ib(indices, 6);
 
-    glm::mat4 proj = glm::ortho(-1.0f, 1.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, 1920.0f, 0.0f, 1080.0f, -1.0f, 1.0f);
+    auto tes = glm::mat4(1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
     Shader shader("res\\shaders\\Basic.shader");
-    shader.bind();
-    shader.setUniformMat4f("u_MVP", proj);
     Renderer renderer;
+
+    // ImGui ////
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.ConfigFlags |=
+        ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |=
+        ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+    //////
 
     Texture texture("res\\textures\\queen.jpg");
     texture.bind();
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     float r = 0.0f;
     float increment = 0.05f;
-    while (!glfwWindowShouldClose(window)) {
-      glfwPollEvents();
-      renderer.clear();
-      // Alpha-Blending aktivieren
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glm::vec3 translation(0, 0, 0);
 
+    while (!glfwWindowShouldClose(window)) {
+      renderer.clear();
+
+      ImGui_ImplOpenGL3_NewFrame();
+      ImGui_ImplGlfw_NewFrame();
+      ImGui::NewFrame();
+
+      glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+      glm::mat4 mvp = proj * view * model;
+
+      shader.bind();
       shader.setUniform1i("u_Texture", 0);
+      shader.setUniformMat4f("u_MVP", mvp);
 
       renderer.drawTest(va, ib, shader);
+      static float f = 0.0f;
+      static int counter = 0;
 
       if (r > 1.0f)
         increment = -0.05f;
       else if (r < 0.0f)
         increment = 0.05f;
       r += increment;
+
+      ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 1920.0f);
+      ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+                  1000.0f / io.Framerate, io.Framerate);
+      ImGui::Render();
+      ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
       glfwSwapBuffers(window);
+      glfwPollEvents();
     }
   }
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
   glfwTerminate();
   return 0;
 }
