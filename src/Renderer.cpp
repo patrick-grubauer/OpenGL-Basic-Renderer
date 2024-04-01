@@ -6,7 +6,6 @@
 #include <glad/glad.h>
 #include <iostream>
 
-
 void Renderer::clear() const { GlCall(glClear(GL_COLOR_BUFFER_BIT)); }
 
 void GLClearError() {
@@ -22,8 +21,6 @@ bool GlLogCall(const char *function, const char *file, int line) {
   }
   return true;
 }
-
-void Renderer::drawTriangle() const {}
 
 void Renderer::drawTest(const VertexArray &va, const IndexBuffer &ib,
                         const Shader &shader) const {

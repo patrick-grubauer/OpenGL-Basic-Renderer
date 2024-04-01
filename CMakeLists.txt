@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(OpenGLIntro)
+project(basic_renderer)
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 
@@ -22,7 +22,7 @@ file(GLOB IMGUI_SRC
 )
 
 
-add_executable(openglintro 
+add_executable(basic_renderer 
         src/main.cpp
         src/Renderer.h
         src/BufferObjects/VertexBuffer.h
@@ -40,18 +40,18 @@ add_executable(openglintro
         "${CMAKE_SOURCE_DIR}/extern/stb_image.h" "${CMAKE_SOURCE_DIR}/extern/stb_image.cpp"
         "${IMGUI_SRC}"
         )
-target_include_directories(openglintro
+target_include_directories(basic_renderer
         PUBLIC
             ${imgui_SOURCE_DIR}
             ${imgui_SOURCE_DIR}/backends
             ${imgui_SOURCE_DIR}/examples
 )
 
-target_link_libraries(openglintro glfw glm::glm)
+target_link_libraries(basic_renderer glfw glm::glm)
 
 
  
-target_include_directories(openglintro PUBLIC "${CMAKE_SOURCE_DIR}/extern")
+target_include_directories(basic_renderer PUBLIC "${CMAKE_SOURCE_DIR}/extern")
 file(COPY ${CMAKE_SOURCE_DIR}/res DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # compile commands
