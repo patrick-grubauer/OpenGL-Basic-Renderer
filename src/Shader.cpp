@@ -11,7 +11,6 @@
 #include <sstream>
 #include <string>
 
-
 #include "Renderer.h"
 
 ShaderProgramSource Shader::parseShader() {
@@ -106,7 +105,7 @@ void Shader::setUniform4f(const std::string &name, float v1, float v2, float v3,
   GlCall(glUniform4f(getUnifromLocation(name), v1, v2, v3, v4));
 }
 
-int Shader::getUnifromLocation(const std::string &name) {
+int Shader::getUnifromLocation(const std::string &name) const {
   if (uniform_locations.find(name) != uniform_locations.end()) {
     return uniform_locations[name];
   }

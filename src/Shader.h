@@ -18,7 +18,7 @@ class Shader {
 private:
   unsigned int m_RendererId;
   const std::string m_Filepath;
-  std::unordered_map<std::string, int> uniform_locations;
+  mutable std::unordered_map<std::string, int> uniform_locations;
 
 public:
   Shader(const std::string &path);
@@ -36,7 +36,7 @@ public:
   void setUniformMat4f(const std::string &name, const glm::mat4 &matrix);
 
 private:
-  int getUnifromLocation(const std::string &name);
+  int getUnifromLocation(const std::string &name) const;
 
   unsigned int createShader(const std::string &vetexShader,
                             const std::string &fragmentShader);
